@@ -1,17 +1,30 @@
-import React,{useEffect, useState} from "react";
-import './App.css';
-import { useEffect } from 'react';
-import { Route } from "react-router-dom"
+import React from "react";
+import { Switch, Route } from "react-router-dom"
+import LoginForm from './components/LoginForm.js'
+import SignUpForm from "./components/SignUpForm"
+import NavBar from './components/NavBar.js'
+
 
 function App() {
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
 
 
 
   return (
-    <div>
+    <>
+    <NavBar />
+
+    <Switch> 
+    <Route path="/signup">
+     <SignUpForm />
+    </Route>   
     
-    </div>
+    <Route path ="/login">
+     <LoginForm />
+    </Route>
+    
+    </Switch>
+    </>
   );
 }
 
