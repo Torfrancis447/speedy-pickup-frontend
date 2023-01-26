@@ -1,184 +1,132 @@
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import SchoolIdInput from './SchoolIdInput';
+import Button from 'react-bootstrap/Button';
 import { Alert } from 'react-bootstrap'
+import { useHistory } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
 
 
-import React, {useState} from 'react';
+function SignUpForm({setUser, user}){
 
-
-function SignUpForm(){
+    let history = useHistory()
     const[errors, setErrors] = useState([])
+    const[schools, setSchools] = useState([])
     const[formData, setFormData] = useState({
+        acct_type: "--Choose Account Type--",
+        user_name: "", 
+        password: "",
+        password_confirmation: "",
         name: "",
-        user_name:'',
-        password:'',
-        password_confirmation:"",
-        email:'',
-        acct_type:"",
-        phone_number:"",
+        email: "",
+        phone_number: "",
         photo_id: "",
-        school_id: undefined
-
+        school_id: ""
     })
 
     
 
-    function handleSubmit(e){
+    function handleSubmit(e) {
         e.preventDefault()
         setErrors([])
-        fetch('/signup',{
+        fetch('/signup', {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(formData),
-          }).then((r) =>{
-            if(r.ok){
-                
+        }).then((r) => {
+            if (r.ok) {
+                r.json().then((userInfo)=> setUser(userInfo))
             } else {
-                r.json().then((err)=>(setErrors(err.errors)))
+                r.json().then((err) => (setErrors(err.errors)))
             }
-          })    
+        })
+        setFormData({
+            user_name: "", 
+            password: "",
+            password_confirmation: "",
+            name: "",
+            email: "",
+            phone_number: "",
+            photo_id: "",
+            school_id: ""
+        })
+        history.push("/")
         
-        }
-    console.log(errors.errors)
+    }
+    // console.log(errors.errors)
     console.log(formData)
-          
+
+    useEffect(() => {
+        fetch('/schools')
+        .then(resp => resp.json())
+        .then((schoolData) => setSchools(schoolData))
+    }, [])
+    console.log(schools)
+        
     function handleChange(e) {
         const name = e.target.name
         const value = e.target.value
         setFormData({...formData, [name]: value,})
     } 
 
-    const school = 
-    <div>
-    <label>School: </label>
-    <input 
-        // value={formData.date}
-        onChange={handleChange}                                
-        type="number" 
-        name="school_id" 
-        placeholder='Ex: school..'
-    />
-    </div>
+    const schoolOptions = schools.map((school) => <option key={school.id} value={school.id}>{school.name}</option>)
 
+
+    const school = 
+    // <Form.Group>
+    //     <Form.Label>School: </Form.Label>
+    //     <Form.Control 
+    //     onChange={handleChange}
+    //     placeholder="Ex: johndoe.." 
+    //     type="text" 
+    //     name="school_id" 
+    //     value={formData.school_id}
+    //     />            
+    // </Form.Group>
+    <Form.Group className="mb-3">
+        <Form.Label>School: </Form.Label>
+        <Form.Select 
+        onChange={handleChange}
+        placeholder='Select a school...' 
+        name='school_id'
+        value={formData.school_id}
+        >
+            <option>--Choose your school--</option>
+            {schoolOptions}
+        </Form.Select>
+    </Form.Group>           
 
 
     return (       
-            // <form onSubmit={handleSubmit}>
-            //     <div >
-            //         <div>
-            //             <div>
-            //                 <label>Account Type: </label>
-            //                 <select 
-            //                     onChange={handleChange}
-                                
-            //                     placeholder='Select Account Type...' 
-            //                     name='acct_type' 
-            //                     // value={mountainData.name}
-            //                     >
-            //                     <option >Choose Account Type</option>
-            //                     <option >Parent</option>
-            //                     <option>Teacher</option>
-            //                 </select>
-            //             </div>
-            //             <div>
-            //                 <label>Username: </label>
-            //                 <input 
-            //                     // value={formData.date}
-            //                     onChange={handleChange}                                
-            //                     type="text" 
-            //                     name="user_name" 
-            //                     placeholder='Ex: johndoe..'
-            //                 />
-            //             </div>
-            //             <div >
-            //                 <label>Password: </label>
-            //                 <input 
-            //                     // value={formData.buddies}
-            //                     onChange={handleChange}                                
-            //                     type="password" 
-            //                     name="password" 
-            //                 />
-            //             </div>
-            //             <div>
-            //                 <label>Confirm Password: </label>
-            //                 <input 
-            //                     // value={formData.buddies}
-            //                     onChange={handleChange}  
-                                
-            //                     type="password" 
-            //                     name="password_confirmation" 
-            //                 />
-            //             </div>
-            //             <div>
-            //                 <label>Name: </label>
-            //                 <input 
-            //                     // value={formData.buddies}
-            //                     onChange={handleChange}                           
-            //                     // onChange={(e) => console.log(e.target.value)}
-            //                     type="text" 
-            //                     name="name"
-            //                     placeholder='Ex: John Doe..'
-            //                 />
-            //             </div>
-            //             <div>
-            //                 <label>Email: </label>
-            //                 <input 
-            //                     // value={formData.buddies}
-            //                     onChange={handleChange}  
-                                
-            //                     type="text" 
-            //                     name="email"
-            //                     placeholder='Ex: johndoe@gmail.com'
-            //                 />
-            //             </div>
-            //             <div>
-            //                 <label>Phone Number: </label>
-            //                 <input 
-            //                     // value={formData.buddies}
-            //                     onChange={handleChange}  
-                                
-            //                     type="tel" 
-            //                     name="phone_number"
-            //                     placeholder='Ex: (248)909-4311)'
-            //                 />
-            //             </div>
-            //             {formData.acct_type === "Parent" ? null : school}
-            //             <div>
-            //                 <label>Upload your photoID: </label>
-            //                 <input 
-            //                 onChange={handleChange}
-            //                 type="file" 
-            //                 name="photo_id"
-            //                 />
-            //             </div>
-            //             <div>
-
-            //         </div>
-            //         {errors.map((e) => 
-            //             <Alert variant='danger' key={e}>{e}</Alert>)}
-            //         </div>
-            //     </div>
-            //     <div >
-            //         <button type='submit' >Create User</button>
-            //     </div> 
-            // </form>
-    
-
       <Container style={{ width: '18rem' }}>
-         <Form>
-             <Form.Group>
+      {errors.map((e) => 
+    <Alert variant='danger' key={e}>{e}</Alert>)}
+         <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+                <Form.Label>Account Type: </Form.Label>
+                <Form.Select 
+                onChange={handleChange}
+                placeholder='Select Account Type...' 
+                name='acct_type'
+                value={formData.acct_type}
+                >
+                    <option>--Choose Account Type--</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Teacher">Teacher</option>                
+                </Form.Select>
+            </Form.Group>           
+             <Form.Group className="mb-3">
                  <Form.Label>Username: </Form.Label>
             <Form.Control 
                 onChange={handleChange}
                 placeholder="Ex: johndoe.." 
                 type="text" 
-                name="name" 
+                name="user_name" 
+                value={formData.user_name}
             />            
             </Form.Group>
-            <Form.Group >
+            <Form.Group className="mb-3">
                 <Form.Label>Password: </Form.Label>
             <Form.Control 
                 onChange={handleChange} 
@@ -186,64 +134,82 @@ function SignUpForm(){
                 id="inputPassword5"
                 // aria-describedby="passwordHelpBlock" 
                 name="password" 
+                value={formData.password}
             />            
             <Form.Text id="passwordHelpBlock" muted>
                 Your password must be 8-20 characters long, contain letters and numbers,
                 and must not contain spaces, special characters, or emoji.
             </Form.Text>
             </Form.Group>
-            <Form.Group >
+            <Form.Group className="mb-3">
                 <Form.Label>Confirm Password: </Form.Label>
             <Form.Control 
                 onChange={handleChange} 
                 type="password"
-                id="inputPassword5"
+                // id="inputPassword5"
                 aria-describedby="passwordHelpBlock" 
                 name="password_confirmation" 
+                value={formData.password_confirmation}
             />            
             <Form.Text id="passwordHelpBlock" muted>
                 Please confirm your password
             </Form.Text>
             </Form.Group>
-            <Form.Group >
+            <Form.Group className="mb-3" >
                 <Form.Label>Name</Form.Label>
             <Form.Control 
                 onChange={handleChange} 
                 placeholder="Ex: John Doe"
                 type="text" 
-                name="name" 
+                name="name"
+                value={formData.name} 
             />            
             </Form.Group>
-
-            
-            <Form.Group >
+            {formData.acct_type === "Parent" || formData.acct_type === "--Choose Account Type--"  ? null : school}
+            <Form.Group className="mb-3">
             <Form.Label>Phone Number</Form.Label>
-            <Form.Control type="phonenumber" placeholder="123456789" />
+            <Form.Control 
+                onChange={handleChange} 
+                name="phone_number" 
+                placeholder="123456789" 
+                value={formData.phone_number}
+                />
             </Form.Group>
             
-            <Form.Group >
+            <Form.Group className="mb-3">
             <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="name@example.com" />
+            <Form.Control 
+            onChange={handleChange} 
+            name="email" 
+            type="email" 
+            placeholder="name@example.com"
+            value={formData.email}
+             />
+            
             </Form.Group>
 
-            <Form.Group >
+            {/* <Form.Group className="mb-3">
             <Form.Label>Notes</Form.Label>
-            <Form.Control as="textarea" rows={3} />
-            </Form.Group>
-
-            {/* <Form.Group>
-                <Form.Label> Upload your Photo ID</Form.Label>
-                <Form.File type="file" as="file"/>                
+            <Form.Control 
+            value={formData.notes} 
+            as="textarea" rows={3} 
+            onChange={handleChange} 
+            name="notes"/>
             </Form.Group> */}
 
-            <Form.Group>
-                <Form.Select>
-                    <option>Choose Account Type</option>
-                    <option value="Parent">Parent</option>
-                    <option value="Teacher">Teacher</option>                
-                </Form.Select>
-            </Form.Group>           
-
+            <Form.Group className="mb-3">
+                <Form.Label> Upload your Photo ID</Form.Label>
+                <Form.Control 
+                    type="file"
+                    onChange={handleChange}
+                    name="photo_id"
+                    value={formData.photo_id}
+                />           
+            </Form.Group>
+            <div className="mb-3 d-grid gap-2">
+            <Button type="submit" size="lg" > Signup </Button>
+            </div>
+            
         </Form>
     </Container>
         
