@@ -1,6 +1,7 @@
 import {Form, Button, Container } from 'react-bootstrap'
 import { useState } from 'react'
 import { useHistory } from "react-router-dom";
+import Alert from 'react-bootstrap/Alert'
 
 
 function LoginForm( {user, setUser} ){
@@ -30,6 +31,7 @@ function LoginForm( {user, setUser} ){
         }).then((r) => {
             if (r.ok) {
                 r.json().then((userInfo) => setUser(userInfo))
+                history.push("/")
             } else {
                 r.json().then((err) => (setErrors(err.errors)))
             }
@@ -38,11 +40,12 @@ function LoginForm( {user, setUser} ){
             user_name: "",
             password: ""
         })
-    //    history.push("/")
     }
     console.log(loginObj)
     return (
     <Container fluid="sm" style={{ width: '18rem' }}>
+    {errors.map((e) => 
+        <Alert variant='danger' key={e}>{e}</Alert>)}
         <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
@@ -68,8 +71,7 @@ function LoginForm( {user, setUser} ){
             
             <Button variant="primary" type="submit">
                 Submit
-            </Button>{ user ?
-            (<h2>Hello, welcome {user.name}!</h2>) : (<h1> please login </h1>)}
+            </Button>
         </Form>
     </Container>
     )

@@ -36,7 +36,9 @@ function SignUpForm({setUser, user}){
             body: JSON.stringify(formData),
         }).then((r) => {
             if (r.ok) {
-                r.json().then((userInfo)=> setUser(userInfo))
+                r.json().then((userInfo)=> {
+                    setUser(userInfo)
+                    history.push("/")})
             } else {
                 r.json().then((err) => (setErrors(err.errors)))
             }
@@ -51,7 +53,6 @@ function SignUpForm({setUser, user}){
             photo_id: "",
             school_id: ""
         })
-        history.push("/")
         
     }
     // console.log(errors.errors)
@@ -74,16 +75,6 @@ function SignUpForm({setUser, user}){
 
 
     const school = 
-    // <Form.Group>
-    //     <Form.Label>School: </Form.Label>
-    //     <Form.Control 
-    //     onChange={handleChange}
-    //     placeholder="Ex: johndoe.." 
-    //     type="text" 
-    //     name="school_id" 
-    //     value={formData.school_id}
-    //     />            
-    // </Form.Group>
     <Form.Group className="mb-3">
         <Form.Label>School: </Form.Label>
         <Form.Select 
@@ -101,7 +92,7 @@ function SignUpForm({setUser, user}){
     return (       
       <Container style={{ width: '18rem' }}>
       {errors.map((e) => 
-    <Alert variant='danger' key={e}>{e}</Alert>)}
+        <Alert variant='danger' key={e}>{e}</Alert>)}
          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
                 <Form.Label>Account Type: </Form.Label>
@@ -200,14 +191,15 @@ function SignUpForm({setUser, user}){
             <Form.Group className="mb-3">
                 <Form.Label> Upload your Photo ID</Form.Label>
                 <Form.Control 
-                    type="file"
+                placeholder='Insert URL'
+                    type="text"
                     onChange={handleChange}
                     name="photo_id"
                     value={formData.photo_id}
                 />           
             </Form.Group>
             <div className="mb-3 d-grid gap-2">
-            <Button type="submit" size="lg" > Signup </Button>
+        <Button type="submit" size="lg"> Signup </Button>
             </div>
             
         </Form>

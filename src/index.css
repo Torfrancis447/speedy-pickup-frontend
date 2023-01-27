@@ -1,1 +1,6 @@
-
+.delete {
+    display: flex ;
+    cursor: pointer;
+    align-items: flex-end;
+    width: 15px;
+    }
